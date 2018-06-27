@@ -1,7 +1,7 @@
 defmodule ExAws.Cloudformation.Mixfile do
   use Mix.Project
 
-  @version "2.0.0"
+  @version "2.0.1"
   @service "cloudformation"
   @url "https://github.com/ex-aws/ex_aws_#{@service}"
 
