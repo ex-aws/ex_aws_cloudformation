@@ -134,6 +134,46 @@ defmodule ExAws.Cloudformation do
 
 
   @doc """
+  Updates a stack as specified in a template.
+
+  Please read: http://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_UpdateStack.html
+
+  Examples:
+  ```
+  # Update stack from a template url
+  Cloudformation.Update_stack("stack_name", [template_url: "https://s3.amazonaws.com/sample.json"])
+
+  # Update stack with parameters
+  Cloudformation.Update_stack("test_stack",
+  [parameters: [[parameter_key: "AvailabilityZone", parameter_value: "us-east-1a"],
+  [parameter_key: "InstanceType", parameter_value: "m1.micro"]]])
+  ```
+  """
+  @type update_stack_opts :: [
+    capabilities: [binary, ...],
+    disable_rollback: boolean,
+    notification_arns: [binary, ...],
+    on_failure: binary,
+    parameters: [parameter, ...],
+    resource_types: [binary, ...],
+    role_arn: binary,
+    stack_policy_body: binary,
+    stack_policy_url: binary,
+    tags: [tag, ...],
+    template_body: binary,
+    template_url: binary,
+    timeout_in_minutes: integer
+  ]
+
+  @spec update_stack(stack_name :: binary, opts :: update_stack_opts) :: ExAws.Operation.Query.t
+  def update_stack(stack_name, opts \\ []) do
+    [{"StackName", stack_name} | opts]
+    |> Enum.flat_map(&format_param/1)
+    |> request(:update_stack)
+  end
+
+
+  @doc """
   Deletes a stack
 
   Please read: http://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeleteStack.html

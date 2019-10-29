@@ -55,6 +55,24 @@ defmodule ExAws.Cloudformation.ParserTest do
     assert parsed_doc[:request_id] == "b9b4b068-3a41-11e5-94eb-example"
   end
 
+  test "parsing a update_stack_response" do
+    rsp = """
+    <UpdateStackResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+      <UpdateStackResult>
+        <StackId>arn:aws:cloudformation:us-east-1:123456789:stack/MyStack/aaf549a0-a413-11df-adb3-5081b3858e83</StackId>
+      </UpdateStackResult>
+      <ResponseMetadata>
+        <RequestId>b9b4b068-3a41-11e5-94eb-example</RequestId>
+      </ResponseMetadata>
+    </UpdateStackResponse>
+    """
+    |> to_success
+
+    {:ok, %{body: parsed_doc}} = Parsers.parse(rsp, :update_stack, nil)
+    assert parsed_doc[:stack_id] == "arn:aws:cloudformation:us-east-1:123456789:stack/MyStack/aaf549a0-a413-11df-adb3-5081b3858e83"
+    assert parsed_doc[:request_id] == "b9b4b068-3a41-11e5-94eb-example"
+  end
+
   test "parsing a delete_stack_response" do
     rsp = """
     <DeleteStackResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
