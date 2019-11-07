@@ -114,6 +114,30 @@ defmodule ExAws.CloudformationTest do
       [resource_types: ["AWS::EC2::Instance", "AWS::EC2::Volume"]])
   end
 
+  test "update_stack no options" do
+    expected = query(:update_stack, %{"StackName" => "test_stack"})
+    assert expected == Cloudformation.update_stack("test_stack")
+  end
+
+  test "update_stack with multiple parameters" do
+    expected = query(:update_stack,
+    %{"StackName" => "test_stack",
+      "Parameters.member.1.ParameterKey" => "AvailabilityZone",
+      "Parameters.member.1.ParameterValue" => "us-east-1a",
+      "Parameters.member.2.ParameterKey" => "InstanceType",
+      "Parameters.member.2.ParameterValue" => "m1.micro"
+      })
+
+    result = Cloudformation.update_stack(
+      "test_stack",
+      [parameters:
+        [ %{parameter_key: "AvailabilityZone", parameter_value: "us-east-1a"},
+          %{parameter_key: "InstanceType", parameter_value: "m1.micro"} ]
+      ])
+
+    assert expected == result
+  end
+
   test "delete_stack" do
     expected = query(:delete_stack, %{"StackName" => "test_stack"})
     assert expected == Cloudformation.delete_stack("test_stack")

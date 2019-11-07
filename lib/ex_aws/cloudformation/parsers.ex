@@ -36,6 +36,16 @@ if Code.ensure_loaded?(SweetXml) do
 
       {:ok, Map.put(resp, :body, parsed_body)}
     end
+    
+    def parse({:ok, %{body: xml}=resp}, :update_stack, _) do
+      parsed_body = xml
+      |> SweetXml.xpath(~x"//UpdateStackResponse",
+        request_id: request_id_xpath(),
+        stack_id: ~x"./UpdateStackResult/StackId/text()"s
+      )
+
+      {:ok, Map.put(resp, :body, parsed_body)}
+    end
 
     def parse({:ok, %{body: xml}=resp}, :delete_stack, _) do
       parsed_body = xml
